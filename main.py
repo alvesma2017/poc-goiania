@@ -24,9 +24,11 @@ if "historico" not in st.session_state:
 st.subheader("Modelos rápidos")
 
 colq1, colq2, colq3 = st.columns(3)
+
 if colq1.button("Gerar edital de licitação"):
-    prompt_quebragelo = "Somente ler o arquivo: template_edital_pregao.txt que esta na base de conhecimento e mostrar na tela o conteúdo deste arquivo."
-    resposta = enviar_para_openai(prompt_quebragelo)
+    prompt_quebragelo = "mostrar conteudo do arquivo: template_edital_pregao.txt que esta na minha base de conhecimento."
+    with st.spinner("Gerando edital de licitação..."):
+        resposta = enviar_para_openai(prompt_quebragelo, usar_prompt_padrao=False)
     st.session_state["historico"].append({
         "documento": "Quebra-gelo: Edital de Licitação",
         "prompt": prompt_quebragelo,
@@ -34,8 +36,9 @@ if colq1.button("Gerar edital de licitação"):
     })
 
 if colq2.button("Criar termo de referência"):
-    prompt_quebragelo = "Somente ler o arquivo: template_termo_referencia.txt que esta na base de conhecimento e mostrar na tela o conteúdo deste arquivo."
-    resposta = enviar_para_openai(prompt_quebragelo)
+    prompt_quebragelo = "mostrar conteudo do arquivo: template_termo_referencia.txt que esta na minha base de conhecimento."
+    with st.spinner("Criando termo de referência..."):
+        resposta = enviar_para_openai(prompt_quebragelo, usar_prompt_padrao=False)
     st.session_state["historico"].append({
         "documento": "Quebra-gelo: Termo de Referência",
         "prompt": prompt_quebragelo,
@@ -43,8 +46,9 @@ if colq2.button("Criar termo de referência"):
     })
 
 if colq3.button("Redigir minuta de contrato"):
-    prompt_quebragelo = "Somente ler o arquivo: template_minuta_contrato.txt que esta na base de conhecimento e mostrar na tela o conteúdo deste arquivo."
-    resposta = enviar_para_openai(prompt_quebragelo)
+    prompt_quebragelo = "mostrar conteudo do arquivo: template_minuta_contrato.txt que esta na minha base de conhecimento."
+    with st.spinner("Redigindo minuta de contrato..."):
+        resposta = enviar_para_openai(prompt_quebragelo, usar_prompt_padrao=False)
     st.session_state["historico"].append({
         "documento": "Quebra-gelo: Minuta de Contrato",
         "prompt": prompt_quebragelo,
@@ -72,7 +76,7 @@ if enviar:
                 texto = extrair_texto_pdf(uploaded_file)
             else:
                 texto = extrair_texto_docx(uploaded_file)
-            resposta = enviar_para_openai(texto, prompt_extra)
+            resposta = enviar_para_openai(texto, prompt_extra)  # usar_prompt_padrao=True (padrão)
             st.session_state["historico"].append({
                 "documento": uploaded_file.name,
                 "prompt": prompt_extra,
