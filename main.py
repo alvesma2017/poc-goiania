@@ -28,9 +28,9 @@ if "titulo_modelo" not in st.session_state:
 # ---- FORMULÁRIO NORMAL ----
 with st.form(key="form_envio", clear_on_submit=False):
     uploaded_file = st.file_uploader("Anexe um arquivo Word (.docx) ou PDF (.pdf):", type=["docx", "pdf"])
-    prompt_extra = st.text_area("Observações adicionais (opcional):", height=100, key="prompt")
+    prompt_extra = st.text_area("Observações, texto ou conteúdo para análise (opcional):", height=100, key="prompt")
     col1, col2 = st.columns([1, 1])
-    enviar = col1.form_submit_button("Analise o arquivo - Termo de Referência, Edital de Licitação ou Minuta de Contrato")
+    enviar = col1.form_submit_button("Analisar (arquivo e/ou texto)")
     limpar = col2.form_submit_button("Limpar histórico")
 
 if limpar:
@@ -40,22 +40,36 @@ if limpar:
     st.experimental_rerun()
 
 if enviar:
-    if uploaded_file is None:
-        st.error("Por favor, anexe um arquivo Word ou PDF para análise.")
-    else:
-        with st.spinner("Analisando o documento..."):
-            if uploaded_file.type == "application/pdf":
-                texto = extrair_texto_pdf(uploaded_file)
-            else:
-                texto = extrair_texto_docx(uploaded_file)
-            resposta = enviar_para_openai(texto, prompt_extra)
-            st.session_state["historico"].append({
-                "documento": uploaded_file.name,
-                "prompt": prompt_extra,
-                "resposta": resposta,
-            })
+    texto = ""
+    nome_doc = ""
+    # Se tiver arquivo, prioriza arquivo
+    if uploaded_file is not None:
+        nome_doc = uploaded_file.name
+        if uploaded_file.type == "application/pdf":
+            texto = extrair_texto_pdf(uploaded_file)
+        else:
+            texto = extrair_texto_docx(uploaded_file)
+        # prompt_extra pode ser complementar (campo de texto é opcional)
+        resposta = enviar_para_openai(texto, prompt_extra)
+        st.session_state["historico"].append({
+            "documento": nome_doc,
+            "prompt": prompt_extra,
+            "resposta": resposta,
+        })
         st.session_state["texto_modelo"] = None
         st.session_state["titulo_modelo"] = None
+    elif prompt_extra.strip():
+        # Se não tem arquivo, mas tem texto no campo textarea
+        resposta = enviar_para_openai(prompt_extra, "", usar_prompt_padrao=True)
+        st.session_state["historico"].append({
+            "documento": "Texto digitado",
+            "prompt": prompt_extra,
+            "resposta": resposta,
+        })
+        st.session_state["texto_modelo"] = None
+        st.session_state["titulo_modelo"] = None
+    else:
+        st.error("Por favor, anexe um arquivo ou digite um texto para análise.")
 
 # ---- QUEBRA-GELO (BOTÕES) ABAIXO DO FORMULÁRIO ----
 st.markdown("---")
