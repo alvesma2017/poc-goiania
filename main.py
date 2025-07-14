@@ -12,7 +12,7 @@ with st.sidebar:
             <a href='/' style='color:#fff;text-decoration:none;'><b>Página Principal</b></a>
         </div>
         <div style='background-color:#111124;padding:20px;border-radius:10px; text-align:center; margin-top: 20px;'>
-            <a href='/Prompt_Livre' style='color:#fff;text-decoration:none;'><b>Prompt Livre</b></a>
+            <a href='https://poc-goiania-gpt-v1.streamlit.app/' style='color:#fff;text-decoration:none;'><b>Prompt Livre</b></a>
         </div>
         """,
         unsafe_allow_html=True,
