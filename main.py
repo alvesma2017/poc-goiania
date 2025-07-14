@@ -15,20 +15,24 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-st.title("Análise Jurídica  - Licitações")
+st.title("Análise Jurídica - Licitações")
 
 if "historico" not in st.session_state:
     st.session_state["historico"] = []
 
-if "texto_edital" not in st.session_state:
-    st.session_state["texto_edital"] = None
+if "texto_modelo" not in st.session_state:
+    st.session_state["texto_modelo"] = None
+if "titulo_modelo" not in st.session_state:
+    st.session_state["titulo_modelo"] = None
 
 # ---- QUEBRA-GELO (BOTÕES) ----
 st.subheader("Modelos rápidos")
 colq1, colq2, colq3 = st.columns(3)
 
+# EDITAL
 if colq1.button("Gerar edital de licitação"):
-    st.session_state["texto_edital"] = """
+    st.session_state["titulo_modelo"] = "Modelo: Edital de Licitação"
+    st.session_state["texto_modelo"] = """
 **EDITAL DE LICITAÇÃO Nº ___/2025 – PREGÃO ELETRÔNICO**
 
 A PREFEITURA MUNICIPAL DE [NOME], por meio do(a) [Secretaria/Departamento], torna público para conhecimento dos interessados que realizará licitação na modalidade Pregão Eletrônico, do tipo menor preço, nos termos da Lei nº 14.133/2021, para contratação de [OBJETO].
@@ -65,33 +69,92 @@ Menor preço global / por item (especificar)
 [Cargo]
     """
 
+# TERMO DE REFERÊNCIA
 if colq2.button("Criar termo de referência"):
-    prompt_quebragelo = "mostrar conteudo do arquivo: template_termo_referencia.txt que esta na minha base de conhecimento."
-    with st.spinner("Criando termo de referência..."):
-        resposta = enviar_para_openai(prompt_quebragelo, usar_prompt_padrao=False)
-    st.session_state["historico"].append({
-        "documento": "Quebra-gelo: Termo de Referência",
-        "prompt": prompt_quebragelo,
-        "resposta": resposta,
-    })
-    st.session_state["texto_edital"] = None
+    st.session_state["titulo_modelo"] = "Modelo: Termo de Referência"
+    st.session_state["texto_modelo"] = """
+**TERMO DE REFERÊNCIA**
 
+1. **OBJETO**  
+Contratação de empresa especializada em [descrever], conforme condições, quantidades e exigências estabelecidas neste Termo de Referência.
+
+2. **JUSTIFICATIVA DA CONTRATAÇÃO**  
+[Fundamentar com base no interesse público, eficiência administrativa ou necessidade técnica. Ex: Art. 18, I e §1º da Lei 14.133/21]
+
+3. **ESPECIFICAÇÃO DO OBJETO**  
+[Descrição técnica detalhada, unidades, prazo de entrega, garantias, local da execução]
+
+4. **PRAZO DE EXECUÇÃO E VIGÊNCIA CONTRATUAL**  
+Prazo estimado: [___] meses
+
+5. **REQUISITOS DE HABILITAÇÃO**  
+[Certidões, experiência mínima, qualificação técnica, alvarás]
+
+6. **FISCALIZAÇÃO E GESTÃO DO CONTRATO**  
+[Nome do fiscal do contrato ou órgão responsável]
+
+7. **CRITÉRIOS DE PAGAMENTO**  
+[Medição, periodicidade, documentos exigidos, glosa]
+
+8. **ORÇAMENTO ESTIMADO**  
+Valor estimado: R$ [__] (conforme cotação de mercado / pesquisa PNCP / SINAPI / etc.)
+
+Elaborado por:  
+[Responsável técnico], [cargo]  
+[Data]
+    """
+
+# MINUTA DE CONTRATO
 if colq3.button("Redigir minuta de contrato"):
-    prompt_quebragelo = "mostrar conteudo do arquivo: template_minuta_contrato.txt que esta na minha base de conhecimento."
-    with st.spinner("Redigindo minuta de contrato..."):
-        resposta = enviar_para_openai(prompt_quebragelo, usar_prompt_padrao=False)
-    st.session_state["historico"].append({
-        "documento": "Quebra-gelo: Minuta de Contrato",
-        "prompt": prompt_quebragelo,
-        "resposta": resposta,
-    })
-    st.session_state["texto_edital"] = None
+    st.session_state["titulo_modelo"] = "Modelo: Minuta de Contrato"
+    st.session_state["texto_modelo"] = """
+**MINUTA DE CONTRATO ADMINISTRATIVO Nº ___/2025**
 
-# ---- MOSTRAR TEXTO DO EDITAL DE LICITAÇÃO SE CLICADO ----
-if st.session_state["texto_edital"]:
+CONTRATANTE: Município de [NOME], com sede à [endereço], inscrito no CNPJ sob o nº [___].  
+CONTRATADA: [RAZÃO SOCIAL], CNPJ nº [___], com sede à [endereço].
+
+As partes acima identificadas resolvem celebrar o presente Contrato Administrativo, com fundamento no processo licitatório nº ___/2025, modalidade [MODALIDADE], nos termos da Lei nº 14.133/2021, mediante as cláusulas e condições a seguir:
+
+**CLÁUSULA PRIMEIRA – DO OBJETO**  
+[Descrever detalhadamente o objeto do contrato]
+
+**CLÁUSULA SEGUNDA – DO PRAZO**  
+[Determinar o prazo de vigência e execução]
+
+**CLÁUSULA TERCEIRA – DO VALOR E PAGAMENTO**  
+[Valor global ou por item, condições de pagamento, reajuste]
+
+**CLÁUSULA QUARTA – DAS OBRIGAÇÕES DA CONTRATANTE**  
+[Listar obrigações, como fiscalizar, pagar, etc.]
+
+**CLÁUSULA QUINTA – DAS OBRIGAÇÕES DA CONTRATADA**  
+[Listar entregas, prazos, normas técnicas, sigilo]
+
+**CLÁUSULA SEXTA – DAS PENALIDADES**  
+[Advertência, multa, suspensão – conforme art. 156 da Lei 14.133/2021]
+
+**CLÁUSULA SÉTIMA – DA RESCISÃO**  
+[Hipóteses previstas em lei]
+
+**CLÁUSULA OITAVA – DO FORO**  
+[Indicar foro da comarca do Município]
+
+E por estarem justas e contratadas, firmam o presente contrato em [nº] vias de igual teor e forma.
+
+[Município], [Data]
+
+__________________________  
+PREFEITURA MUNICIPAL
+
+__________________________  
+CONTRATADA
+    """
+
+# ---- MOSTRAR TEXTO DO MODELO ESCOLHIDO (SE ALGUM FOI CLICADO) ----
+if st.session_state["texto_modelo"]:
     st.markdown("---")
-    st.markdown("### Modelo: Edital de Licitação")
-    st.markdown(st.session_state["texto_edital"])
+    st.markdown(f"### {st.session_state['titulo_modelo']}")
+    st.markdown(st.session_state["texto_modelo"])
     st.markdown("---")
 
 # ---- FORMULÁRIO NORMAL ----
@@ -104,7 +167,8 @@ with st.form(key="form_envio", clear_on_submit=False):
 
 if limpar:
     st.session_state["historico"] = []
-    st.session_state["texto_edital"] = None
+    st.session_state["texto_modelo"] = None
+    st.session_state["titulo_modelo"] = None
     st.experimental_rerun()
 
 if enviar:
@@ -122,7 +186,8 @@ if enviar:
                 "prompt": prompt_extra,
                 "resposta": resposta,
             })
-        st.session_state["texto_edital"] = None
+        st.session_state["texto_modelo"] = None
+        st.session_state["titulo_modelo"] = None
 
 # ---- EXIBIR HISTÓRICO ----
 for idx, item in enumerate(reversed(st.session_state["historico"])):
