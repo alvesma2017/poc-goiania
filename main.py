@@ -9,10 +9,10 @@ with st.sidebar:
     st.markdown(
         """
         <div style='background-color:#111124;padding:20px;border-radius:10px; text-align:center; margin-top: 10px;'>
-            <a href='/' style='color:#fff;text-decoration:none;'><b>Página Principal</b></a>
+            <a href='/' style='color:#fff;text-decoration:none;'><b>Análise Jurídica</b></a>
         </div>
         <div style='background-color:#111124;padding:20px;border-radius:10px; text-align:center; margin-top: 20px;'>
-            <a href='https://poc-goiania-gpt-v1.streamlit.app/' style='color:#fff;text-decoration:none;'><b>Prompt Livre</b></a>
+            <a href='https://poc-goiania-gpt-v1.streamlit.app/' style='color:#fff;text-decoration:none;'><b>Gerar Documentação</b></a>
         </div>
         """,
         unsafe_allow_html=True,
