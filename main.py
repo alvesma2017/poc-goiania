@@ -15,13 +15,50 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-
 st.title("Análise Jurídica do Termo de Referência")
 
 if "historico" not in st.session_state:
     st.session_state["historico"] = []
 
-# CAMPOS DO FORMULÁRIO PRINCIPAL
+# --------------------------
+# QUEBRA-GELO - BOTÕES
+# --------------------------
+st.subheader("Modelos Rápidos")
+
+colq1, colq2, colq3 = st.columns(3)
+if colq1.button("Gerar edital de licitação"):
+    with open("template_edital_pregao.txt", "r", encoding="utf-8") as f:
+        conteudo = f.read()
+    resposta = enviar_para_openai(conteudo)
+    st.session_state["historico"].append({
+        "documento": "template_edital_pregao.txt",
+        "prompt": "",
+        "resposta": resposta,
+    })
+
+if colq2.button("Criar termo de referência"):
+    with open("template_termo_referencia.txt", "r", encoding="utf-8") as f:
+        conteudo = f.read()
+    resposta = enviar_para_openai(conteudo)
+    st.session_state["historico"].append({
+        "documento": "template_termo_referencia.txt",
+        "prompt": "",
+        "resposta": resposta,
+    })
+
+if colq3.button("Redigir minuta de contrato"):
+    with open("template_minuta_contrato.txt", "r", encoding="utf-8") as f:
+        conteudo = f.read()
+    resposta = enviar_para_openai(conteudo)
+    st.session_state["historico"].append({
+        "documento": "template_minuta_contrato.txt",
+        "prompt": "",
+        "resposta": resposta,
+    })
+
+# --------------------------
+# FORMULÁRIO NORMAL
+# --------------------------
 with st.form(key="form_envio", clear_on_submit=False):
     uploaded_file = st.file_uploader("Anexe um arquivo Word (.docx) ou PDF (.pdf):", type=["docx", "pdf"])
     prompt_extra = st.text_area("Observações adicionais (opcional):", height=100, key="prompt")
@@ -49,6 +86,9 @@ if enviar:
                 "resposta": resposta,
             })
 
+# --------------------------
+# EXIBIR HISTÓRICO
+# --------------------------
 for idx, item in enumerate(reversed(st.session_state["historico"])):
     st.markdown(f"**Arquivo analisado:** {item['documento']}")
     if item['prompt']:
@@ -56,6 +96,3 @@ for idx, item in enumerate(reversed(st.session_state["historico"])):
     st.markdown("---")
     st.markdown(item["resposta"], unsafe_allow_html=True)
     st.markdown("---")
-
-# Fecha a div do frame principal
-st.markdown("</div>", unsafe_allow_html=True)
