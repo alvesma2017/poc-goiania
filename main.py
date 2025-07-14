@@ -9,7 +9,7 @@ with st.sidebar:
     st.markdown(
         """
         <div style='background-color:#111124;padding:20px;border-radius:10px; text-align:center; margin-top: 10px;'>
-            <a href='#' style='color:#fff;text-decoration:none;'><b>Agente</b></a>
+            <a href='#' style='color:#fff;text-decoration:none;'><b></b></a>
         </div>
         """,
         unsafe_allow_html=True,
