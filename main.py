@@ -20,45 +20,38 @@ st.title("Análise Jurídica do Termo de Referência")
 if "historico" not in st.session_state:
     st.session_state["historico"] = []
 
-# --------------------------
-# QUEBRA-GELO - BOTÕES
-# --------------------------
-st.subheader("Modelos Rápidos")
+# ---- QUEBRA-GELO (BOTÕES) ----
+st.subheader("Modelos rápidos")
 
 colq1, colq2, colq3 = st.columns(3)
 if colq1.button("Gerar edital de licitação"):
-    with open("template_edital_pregao.txt", "r", encoding="utf-8") as f:
-        conteudo = f.read()
-    resposta = enviar_para_openai(conteudo)
+    prompt_quebragelo = "mostrar conteudo do arquivo: template_edital_pregao.txt que esta na minha base de conhecimento."
+    resposta = enviar_para_openai(prompt_quebragelo)
     st.session_state["historico"].append({
-        "documento": "template_edital_pregao.txt",
-        "prompt": "",
+        "documento": "Quebra-gelo: Edital de Licitação",
+        "prompt": prompt_quebragelo,
         "resposta": resposta,
     })
 
 if colq2.button("Criar termo de referência"):
-    with open("template_termo_referencia.txt", "r", encoding="utf-8") as f:
-        conteudo = f.read()
-    resposta = enviar_para_openai(conteudo)
+    prompt_quebragelo = "mostrar conteudo do arquivo: template_termo_referencia.txt que esta na minha base de conhecimento."
+    resposta = enviar_para_openai(prompt_quebragelo)
     st.session_state["historico"].append({
-        "documento": "template_termo_referencia.txt",
-        "prompt": "",
+        "documento": "Quebra-gelo: Termo de Referência",
+        "prompt": prompt_quebragelo,
         "resposta": resposta,
     })
 
 if colq3.button("Redigir minuta de contrato"):
-    with open("template_minuta_contrato.txt", "r", encoding="utf-8") as f:
-        conteudo = f.read()
-    resposta = enviar_para_openai(conteudo)
+    prompt_quebragelo = "mostrar conteudo do arquivo: template_minuta_contrato.txt que esta na minha base de conhecimento."
+    resposta = enviar_para_openai(prompt_quebragelo)
     st.session_state["historico"].append({
-        "documento": "template_minuta_contrato.txt",
-        "prompt": "",
+        "documento": "Quebra-gelo: Minuta de Contrato",
+        "prompt": prompt_quebragelo,
         "resposta": resposta,
     })
 
-# --------------------------
-# FORMULÁRIO NORMAL
-# --------------------------
+# ---- FORMULÁRIO NORMAL ----
 with st.form(key="form_envio", clear_on_submit=False):
     uploaded_file = st.file_uploader("Anexe um arquivo Word (.docx) ou PDF (.pdf):", type=["docx", "pdf"])
     prompt_extra = st.text_area("Observações adicionais (opcional):", height=100, key="prompt")
@@ -86,13 +79,11 @@ if enviar:
                 "resposta": resposta,
             })
 
-# --------------------------
-# EXIBIR HISTÓRICO
-# --------------------------
+# ---- EXIBIR HISTÓRICO ----
 for idx, item in enumerate(reversed(st.session_state["historico"])):
     st.markdown(f"**Arquivo analisado:** {item['documento']}")
     if item['prompt']:
-        st.markdown(f"**Observações:** {item['prompt']}")
+        st.markdown(f"**Prompt enviado:** `{item['prompt']}`")
     st.markdown("---")
     st.markdown(item["resposta"], unsafe_allow_html=True)
     st.markdown("---")
