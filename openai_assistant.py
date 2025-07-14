@@ -37,7 +37,7 @@ As sugestões devem ser objetivas, diretas e indicar o texto substitutivo, garan
         full_prompt = documento_texto.strip()  # Aqui deve vir o texto do botão quebra-gelo
 
     response = openai.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4.1",
         messages=[
             {"role": "system", "content": "Você é um assistente jurídico especializado na Lei 14.133/2021."},
             {"role": "user", "content": full_prompt},
