@@ -25,11 +25,43 @@ if "texto_modelo" not in st.session_state:
 if "titulo_modelo" not in st.session_state:
     st.session_state["titulo_modelo"] = None
 
-# ---- QUEBRA-GELO (BOTÕES) ----
+# ---- FORMULÁRIO NORMAL ----
+with st.form(key="form_envio", clear_on_submit=False):
+    uploaded_file = st.file_uploader("Anexe um arquivo Word (.docx) ou PDF (.pdf):", type=["docx", "pdf"])
+    prompt_extra = st.text_area("Observações adicionais (opcional):", height=100, key="prompt")
+    col1, col2 = st.columns([1, 1])
+    enviar = col1.form_submit_button("Enviar para análise")
+    limpar = col2.form_submit_button("Limpar histórico")
+
+if limpar:
+    st.session_state["historico"] = []
+    st.session_state["texto_modelo"] = None
+    st.session_state["titulo_modelo"] = None
+    st.experimental_rerun()
+
+if enviar:
+    if uploaded_file is None:
+        st.error("Por favor, anexe um arquivo Word ou PDF para análise.")
+    else:
+        with st.spinner("Analisando o documento..."):
+            if uploaded_file.type == "application/pdf":
+                texto = extrair_texto_pdf(uploaded_file)
+            else:
+                texto = extrair_texto_docx(uploaded_file)
+            resposta = enviar_para_openai(texto, prompt_extra)
+            st.session_state["historico"].append({
+                "documento": uploaded_file.name,
+                "prompt": prompt_extra,
+                "resposta": resposta,
+            })
+        st.session_state["texto_modelo"] = None
+        st.session_state["titulo_modelo"] = None
+
+# ---- QUEBRA-GELO (BOTÕES) ABAIXO DO FORMULÁRIO ----
+st.markdown("---")
 st.subheader("Modelos rápidos")
 colq1, colq2, colq3 = st.columns(3)
 
-# EDITAL
 if colq1.button("Gerar edital de licitação"):
     st.session_state["titulo_modelo"] = "Modelo: Edital de Licitação"
     st.session_state["texto_modelo"] = """
@@ -69,7 +101,6 @@ Menor preço global / por item (especificar)
 [Cargo]
     """
 
-# TERMO DE REFERÊNCIA
 if colq2.button("Criar termo de referência"):
     st.session_state["titulo_modelo"] = "Modelo: Termo de Referência"
     st.session_state["texto_modelo"] = """
@@ -104,7 +135,6 @@ Elaborado por:
 [Data]
     """
 
-# MINUTA DE CONTRATO
 if colq3.button("Redigir minuta de contrato"):
     st.session_state["titulo_modelo"] = "Modelo: Minuta de Contrato"
     st.session_state["texto_modelo"] = """
@@ -156,38 +186,6 @@ if st.session_state["texto_modelo"]:
     st.markdown(f"### {st.session_state['titulo_modelo']}")
     st.markdown(st.session_state["texto_modelo"])
     st.markdown("---")
-
-# ---- FORMULÁRIO NORMAL ----
-with st.form(key="form_envio", clear_on_submit=False):
-    uploaded_file = st.file_uploader("Anexe um arquivo Word (.docx) ou PDF (.pdf):", type=["docx", "pdf"])
-    prompt_extra = st.text_area("Observações adicionais (opcional):", height=100, key="prompt")
-    col1, col2 = st.columns([1, 1])
-    enviar = col1.form_submit_button("Enviar para análise")
-    limpar = col2.form_submit_button("Limpar histórico")
-
-if limpar:
-    st.session_state["historico"] = []
-    st.session_state["texto_modelo"] = None
-    st.session_state["titulo_modelo"] = None
-    st.experimental_rerun()
-
-if enviar:
-    if uploaded_file is None:
-        st.error("Por favor, anexe um arquivo Word ou PDF para análise.")
-    else:
-        with st.spinner("Analisando o documento..."):
-            if uploaded_file.type == "application/pdf":
-                texto = extrair_texto_pdf(uploaded_file)
-            else:
-                texto = extrair_texto_docx(uploaded_file)
-            resposta = enviar_para_openai(texto, prompt_extra)  # usar_prompt_padrao=True (padrão)
-            st.session_state["historico"].append({
-                "documento": uploaded_file.name,
-                "prompt": prompt_extra,
-                "resposta": resposta,
-            })
-        st.session_state["texto_modelo"] = None
-        st.session_state["titulo_modelo"] = None
 
 # ---- EXIBIR HISTÓRICO ----
 for idx, item in enumerate(reversed(st.session_state["historico"])):
