@@ -25,7 +25,7 @@ st.subheader("Modelos rápidos")
 
 colq1, colq2, colq3 = st.columns(3)
 if colq1.button("Gerar edital de licitação"):
-    prompt_quebragelo = "mostrar conteudo do arquivo: template_edital_pregao.txt que esta na minha base de conhecimento."
+    prompt_quebragelo = "Somente ler o arquivo: template_edital_pregao.txt que esta na base de conhecimento e mostrar na tela o conteúdo deste arquivo."
     resposta = enviar_para_openai(prompt_quebragelo)
     st.session_state["historico"].append({
         "documento": "Quebra-gelo: Edital de Licitação",
@@ -34,7 +34,7 @@ if colq1.button("Gerar edital de licitação"):
     })
 
 if colq2.button("Criar termo de referência"):
-    prompt_quebragelo = "mostrar conteudo do arquivo: template_termo_referencia.txt que esta na minha base de conhecimento."
+    prompt_quebragelo = "Somente ler o arquivo: template_termo_referencia.txt que esta na base de conhecimento e mostrar na tela o conteúdo deste arquivo."
     resposta = enviar_para_openai(prompt_quebragelo)
     st.session_state["historico"].append({
         "documento": "Quebra-gelo: Termo de Referência",
@@ -43,7 +43,7 @@ if colq2.button("Criar termo de referência"):
     })
 
 if colq3.button("Redigir minuta de contrato"):
-    prompt_quebragelo = "mostrar conteudo do arquivo: template_minuta_contrato.txt que esta na minha base de conhecimento."
+    prompt_quebragelo = "Somente ler o arquivo: template_minuta_contrato.txt que esta na base de conhecimento e mostrar na tela o conteúdo deste arquivo."
     resposta = enviar_para_openai(prompt_quebragelo)
     st.session_state["historico"].append({
         "documento": "Quebra-gelo: Minuta de Contrato",
