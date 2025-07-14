@@ -30,7 +30,7 @@ with st.form(key="form_envio", clear_on_submit=False):
     uploaded_file = st.file_uploader("Anexe um arquivo Word (.docx) ou PDF (.pdf):", type=["docx", "pdf"])
     prompt_extra = st.text_area("Observações adicionais (opcional):", height=100, key="prompt")
     col1, col2 = st.columns([1, 1])
-    enviar = col1.form_submit_button("Enviar para análise")
+    enviar = col1.form_submit_button("Analise o arquivo - Termo de Referência, Edital de Licitação ou Minuta de Contrato")
     limpar = col2.form_submit_button("Limpar histórico")
 
 if limpar:

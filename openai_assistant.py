@@ -15,7 +15,10 @@ def enviar_para_openai(documento_texto, prompt_extra="", usar_prompt_padrao=True
 
     if usar_prompt_padrao:
         prompt_base = """
-Analise o Termo de Referência enviado e apresente, em tabela, sugestões de adequação.
+Analise o documento em anexo, confirmando que se trata de um dos templates da base de conhecimento (Termo de Referência, Edital de Licitação ou Minuta de Contrato), caso não seja possível identificar o tipo do documento, solicite a informação ao usuário. Caso o documento anexado não seja um Termo de Referência, Edital de Licitação ou Minuta Contratual, informe que não será possível realizar a análise.
+
+Após a confirmação de que o documento submetido é um Termo de Referência, Edital de Licitação ou Minuta de Contrato apresente, em tabela, as sugestões de adequação caso seja aplicável.
+
 Na tabela, inclua:
 O item ou trecho analisado,
 O conteúdo atual,
@@ -26,8 +29,8 @@ Item analisado
 Conteúdo atual
 Sugestão de texto/conteúdo revisado
 Fundamentação/justificativa (com base na Lei 14.133/2021)
-Após a tabela, gere os textos revisados completos e formatados, prontos para serem inseridos diretamente no Termo de Referência.
-As sugestões devem ser objetivas, diretas e indicar o texto substitutivo, garantindo que o documento esteja plenamente adequado às exigências legais e melhores práticas da Administração Pública.
+Após a tabela, gere os textos revisados completos e formatados, prontos para serem inseridos diretamente no documento.
+As sugestões devem ser objetivas, diretas e indicar o texto substitutivo, garantindo que o documento esteja plenamente adequado às exigências legais e melhores práticas da Administração Pública
 """
         full_prompt = prompt_base + "\n\nDocumento enviado:\n" + documento_texto
         if prompt_extra:
