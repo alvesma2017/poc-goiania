@@ -28,6 +28,25 @@ if "texto_modelo" not in st.session_state:
 if "titulo_modelo" not in st.session_state:
     st.session_state["titulo_modelo"] = None
 
+# ---- CSS para a textarea ----
+st.markdown(
+    """
+    <style>
+    textarea, .stTextArea textarea {
+        border: 2px solid #111124 !important;
+        border-radius: 8px !important;
+        padding: 8px !important;
+        box-shadow: none !important;
+        outline: none !important;
+        background: #F7F5F2 !important;
+        font-size: 16px !important;
+        color: #222 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # ---- FORMULÁRIO NORMAL ----
 with st.form(key="form_envio", clear_on_submit=False):
     uploaded_file = st.file_uploader("Anexe um arquivo Word (.docx) ou PDF (.pdf):", type=["docx", "pdf"])
@@ -59,7 +78,6 @@ if enviar:
             })
         st.session_state["texto_modelo"] = None
         st.session_state["titulo_modelo"] = None
-
 
 # ---- EXIBIR HISTÓRICO ----
 for idx, item in enumerate(reversed(st.session_state["historico"])):
