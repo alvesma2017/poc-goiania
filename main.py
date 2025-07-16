@@ -5,7 +5,7 @@ from openai_assistant import enviar_para_openai
 st.set_page_config(layout="wide", page_title="Agente Jurídico Prefeitura Goiania", initial_sidebar_state="expanded")
 
 with st.sidebar:
-    st.image("logo_eug.png", width=220)
+    st.image("logo_goi.png", width=220)
     st.markdown(
         """
         <div style='background-color:#111124;padding:20px;border-radius:10px; text-align:center; margin-top: 10px;'>
